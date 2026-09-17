@@ -3,6 +3,11 @@
   publish = "dist"
   functions = "netlify/functions"
 
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 [dev]
   framework = "#custom"
   command = "npm run dev:vite -- --host 0.0.0.0"
