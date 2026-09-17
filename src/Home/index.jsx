@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Play, Sparkles } from 'lucide-react'
 import { FaGithub, FaLinkedinIn } from 'react-icons/fa'
 import featuresImage from '../assets/features.jpg'
 import featuresImageTwo from '../assets/features(2).jpg'
+import coverLetterImage from '../assets/cover letter.jpg'
 import logo from '../assets/logo.png'
 
 const testimonials = [
@@ -121,7 +122,7 @@ function Home({ isPublic = false }) {
               <Button asChild className='mt-8 bg-emerald-600 px-8 py-3 hover:bg-emerald-700'><a href={isPublic ? '/auth/sign-in' : '/dashboard'}>{isPublic ? 'Get Started' : 'Build My Cover Letter'}</a></Button>
             </div>
             <div className='overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm lg:order-1'>
-              <img src={featuresImage} alt='ResumeIQ feature preview' className='block aspect-[4/3] h-full w-full object-cover' />
+              <img src={coverLetterImage} alt='ResumeIQ cover letter preview' className='block aspect-[4/3] h-full w-full object-cover' />
             </div>
           </div>
         </section>
