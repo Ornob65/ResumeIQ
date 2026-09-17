@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[dev]
+  framework = "#custom"
+  command = "npm run dev:vite -- --host 0.0.0.0"
+  targetPort = 5173
+  port = 8889
+  functions = "netlify/functions"
+  envFiles = [".env.local"]
