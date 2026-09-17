@@ -136,6 +136,13 @@ function ResumeEditorForm({ getToken, resumeId, userId, title, onSaved, onError 
           useCORS: true,
           backgroundColor: '#ffffff',
           onclone: (documentClone) => {
+            documentClone.querySelectorAll('style').forEach((style) => {
+              style.textContent = style.textContent
+                .replace(/oklch\([^)]*\)/gi, '#000000')
+                .replace(/oklab\([^)]*\)/gi, '#000000')
+                .replace(/color-mix\([^)]*\)/gi, 'transparent')
+            })
+
             documentClone.querySelectorAll('*').forEach((element) => {
               const computedStyle = window.getComputedStyle(element)
               const safeColors = {
@@ -143,12 +150,14 @@ function ResumeEditorForm({ getToken, resumeId, userId, title, onSaved, onError 
                 backgroundColor: computedStyle.backgroundColor,
                 borderColor: computedStyle.borderColor,
                 outlineColor: computedStyle.outlineColor,
+                boxShadow: computedStyle.boxShadow,
+                textShadow: computedStyle.textShadow,
               }
 
               Object.entries(safeColors).forEach(([property, value]) => {
-                const hasUnsupportedColor = value.includes('oklch') || value.includes('oklab')
+                const hasUnsupportedColor = value.includes('oklch') || value.includes('oklab') || value.includes('color-mix')
                 element.style[property] = hasUnsupportedColor
-                  ? (property === 'backgroundColor' || property === 'outlineColor' ? 'transparent' : '#000000')
+                  ? (property === 'backgroundColor' || property === 'outlineColor' || property === 'boxShadow' || property === 'textShadow' ? 'transparent' : '#000000')
                   : value
               })
             })
