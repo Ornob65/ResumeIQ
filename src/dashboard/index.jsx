@@ -56,11 +56,10 @@ function Dashboard() {
               <span className='flex-1'>Cover Letter</span>
               <span className='text-[10px] uppercase tracking-wide'>Soon</span>
             </button>
-            <button type='button' disabled title='ATS Score is coming soon' className='mt-1 flex w-full cursor-not-allowed items-center gap-3 rounded-lg px-3 py-3 text-left text-sm font-medium text-slate-400'>
+            <Link to='/dashboard/ats-score' className='mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm font-medium text-slate-600 transition hover:bg-emerald-50 hover:text-emerald-700'>
               <Gauge className='size-4' aria-hidden='true' />
               <span className='flex-1'>ATS Score</span>
-              <span className='text-[10px] uppercase tracking-wide'>Soon</span>
-            </button>
+            </Link>
           </nav>
         </aside>
 

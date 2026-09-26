@@ -1,6 +1,5 @@
 import React from 'react'
 import { useAuth, useUser } from '@clerk/clerk-react'
-import html2pdf from 'html2pdf.js'
 import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css'
 import { Link, useParams } from 'react-router-dom'
@@ -11,150 +10,6 @@ import Header from '../components/custom/header'
 import ResumePreview from './resume-preview'
 import SummaryForm from './summary-form'
 import { getResume, updateResumeData } from '@/lib/resumes'
-
-const PDF_COLOR_PROPERTIES = [
-  'color',
-  'backgroundColor',
-  'borderTopColor',
-  'borderRightColor',
-  'borderBottomColor',
-  'borderLeftColor',
-  'outlineColor',
-  'boxShadow',
-  'textShadow',
-]
-
-function parseCssNumber(value, percentageScale = 1) {
-  const number = Number.parseFloat(value)
-  return value.trim().endsWith('%') ? number / 100 * percentageScale : number
-}
-
-function formatRgb(red, green, blue, alpha = 1) {
-  const channels = [red, green, blue].map((channel) => Math.round(Math.max(0, Math.min(1, channel)) * 255))
-  return alpha < 1 ? `rgba(${channels.join(', ')}, ${Math.max(0, Math.min(1, alpha))})` : `rgb(${channels.join(', ')})`
-}
-
-function convertOklabToRgb(lightness, a, b, alpha) {
-  const l = 0.3963377774 * a + 0.2158037573 * b + lightness
-  const m = -0.1055613458 * a - 0.0638541728 * b + lightness
-  const s = -0.0894841775 * a - 1.291485548 * b + lightness
-  const linearRed = 4.0767416621 * l ** 3 - 3.3077115913 * m ** 3 + 0.2309699292 * s ** 3
-  const linearGreen = -1.2684380046 * l ** 3 + 2.6097574011 * m ** 3 - 0.3413193965 * s ** 3
-  const linearBlue = -0.0041960863 * l ** 3 - 0.7034186147 * m ** 3 + 1.707614701 * s ** 3
-  const toSrgb = (channel) => channel <= 0.0031308 ? 12.92 * channel : 1.055 * channel ** (1 / 2.4) - 0.055
-
-  return formatRgb(toSrgb(linearRed), toSrgb(linearGreen), toSrgb(linearBlue), alpha)
-}
-
-function convertOklchToRgb(value) {
-  const match = value.match(/oklch\(\s*([\w.+-]+)(?:\s+|,)\s*([\w.+-]+)(?:\s+|,)\s*([\w.+-]+)(?:\s*\/\s*([\w.+-]+))?\s*\)/i)
-  if (!match) return null
-
-  const lightness = parseCssNumber(match[1])
-  const chroma = parseCssNumber(match[2], 0.4)
-  const hue = match[3].toLowerCase() === 'none' ? 0 : parseCssNumber(match[3]) * Math.PI / 180
-  const alpha = match[4] ? parseCssNumber(match[4]) : 1
-  return convertOklabToRgb(lightness, chroma * Math.cos(hue), chroma * Math.sin(hue), alpha)
-}
-
-function convertOklabToRgbValue(value) {
-  const match = value.match(/oklab\(\s*([\w.+-]+)(?:\s+|,)\s*([\w.+-]+)(?:\s+|,)\s*([\w.+-]+)(?:\s*\/\s*([\w.+-]+))?\s*\)/i)
-  if (!match) return null
-
-  return convertOklabToRgb(
-    parseCssNumber(match[1]),
-    parseCssNumber(match[2]),
-    parseCssNumber(match[3]),
-    match[4] ? parseCssNumber(match[4]) : 1,
-  )
-}
-
-function normalizePdfColor(value) {
-  if (!value || !/\b(oklch|oklab|color-mix)\s*\(/i.test(value)) return value
-
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')
-  if (context) {
-    context.fillStyle = value
-    if (context.fillStyle && !/\b(oklch|oklab|color-mix)\s*\(/i.test(context.fillStyle)) return context.fillStyle
-  }
-
-  return replacePdfColorFunctions(value)
-}
-
-function replacePdfColorFunctions(value) {
-  let result = ''
-  let cursor = 0
-
-  while (cursor < value.length) {
-    const match = value.slice(cursor).match(/\b(oklch|oklab|color-mix)\s*\(/i)
-    if (!match || match.index === undefined) return result + value.slice(cursor)
-
-    const start = cursor + match.index
-    result += value.slice(cursor, start)
-    let depth = 0
-    let end = start
-    for (; end < value.length; end += 1) {
-      if (value[end] === '(') depth += 1
-      if (value[end] === ')') {
-        depth -= 1
-        if (depth === 0) {
-          end += 1
-          break
-        }
-      }
-    }
-
-    const color = value.slice(start, end)
-    const functionName = match[1].toLowerCase()
-    let converted = functionName === 'oklch'
-      ? convertOklchToRgb(color)
-      : functionName === 'oklab'
-        ? convertOklabToRgbValue(color)
-        : null
-    if (functionName === 'color-mix') {
-      const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d')
-      if (context) {
-        context.fillStyle = color
-        converted = /\b(oklch|oklab|color-mix)\s*\(/i.test(context.fillStyle) ? null : context.fillStyle
-      }
-    }
-    result += converted ?? 'transparent'
-    cursor = end
-  }
-
-  return result
-}
-
-function sanitizePdfCss(cssText) {
-  return replacePdfColorFunctions(cssText)
-}
-
-function collectPdfStylesheets() {
-  const sheets = []
-  const visitSheet = (sheet) => {
-    try {
-      Array.from(sheet.cssRules).forEach((rule) => {
-        if (rule.styleSheet) visitSheet(rule.styleSheet)
-        else sheets.push(rule.cssText)
-      })
-    } catch {
-      return false
-    }
-    return true
-  }
-
-  Array.from(document.styleSheets).forEach((sheet) => {
-    try {
-      if (visitSheet(sheet)) sheets.push('')
-    } catch {
-      return
-    }
-  })
-
-  return sheets.filter(Boolean).join('\n')
-}
 
 function ResumeEdit() {
   const { resumeId } = useParams()
@@ -218,7 +73,6 @@ function ResumeEditorForm({ getToken, resumeId, userId, title, onSaved, onError 
   const { resumeInfo, updateResumeInfo, updatePersonalField } = useResume()
   const [isSaving, setIsSaving] = React.useState(false)
   const [saveMessage, setSaveMessage] = React.useState('')
-  const [isDownloading, setIsDownloading] = React.useState(false)
   const previewRef = React.useRef(null)
 
   async function handleSave(event) {
@@ -262,64 +116,13 @@ function ResumeEditorForm({ getToken, resumeId, userId, title, onSaved, onError 
     reader.readAsDataURL(file)
   }
 
-  async function handleDownloadPdf() {
-    if (!previewRef.current) return
-
-    setIsDownloading(true)
-    setSaveMessage('')
-    try {
-      const createPdf = html2pdf.default ?? html2pdf
-      if (typeof createPdf !== 'function') throw new Error('PDF exporter failed to load.')
-
-      await createPdf().set({
-        margin: 0,
-        filename: `${title.replace(/[^a-z0-9]+/gi, '-').toLowerCase() || 'resume'}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-          onclone: (documentClone) => {
-            const sanitizedCss = sanitizePdfCss(collectPdfStylesheets())
-            if (sanitizedCss) {
-              documentClone.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
-                try {
-                  if (new URL(link.href, documentClone.baseURI).origin === window.location.origin) link.remove()
-                } catch {
-                  return
-                }
-              })
-
-              const style = documentClone.createElement('style')
-              style.textContent = sanitizedCss
-              documentClone.head.appendChild(style)
-            }
-
-            documentClone.querySelectorAll('*').forEach((element) => {
-              const computedStyle = documentClone.defaultView.getComputedStyle(element)
-              PDF_COLOR_PROPERTIES.forEach((property) => {
-                const value = computedStyle[property]
-                if (/\b(oklch|oklab|color-mix)\s*\(/i.test(value)) {
-                  element.style[property] = normalizePdfColor(value)
-                }
-              })
-            })
-          },
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] },
-      }).from(previewRef.current).save()
-      setSaveMessage('Resume downloaded as PDF.')
-    } catch (error) {
-      setSaveMessage(error instanceof Error ? `PDF download failed: ${error.message}` : 'PDF download failed.')
-    } finally {
-      setIsDownloading(false)
-    }
+  function handleDownloadPdf() {
+    window.print()
   }
 
   return (
-    <div className='mt-8 grid items-start gap-8 lg:grid-cols-[minmax(320px,0.9fr)_minmax(420px,1.1fr)]'>
-      <form onSubmit={handleSave} className='space-y-6 rounded-lg border bg-white p-6 shadow-sm'>
+    <div className='resume-editor-layout mt-8 grid items-start gap-8 lg:grid-cols-[minmax(320px,0.9fr)_minmax(420px,1.1fr)]'>
+      <form onSubmit={handleSave} className='resume-editor-form space-y-6 rounded-lg border bg-white p-6 shadow-sm'>
         <div>
           <h1 className='text-3xl font-bold text-slate-900'>{title}</h1>
           <p className='mt-2 text-slate-600'>Edit your resume details</p>
@@ -474,13 +277,13 @@ function ResumeEditorForm({ getToken, resumeId, userId, title, onSaved, onError 
           {saveMessage && <p role='status' className='text-sm font-medium text-emerald-600'>{saveMessage}</p>}
           <div className='flex flex-wrap gap-3'>
             <Button type='submit' disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Resume'}</Button>
-            <Button type='button' variant='outline' onClick={handleDownloadPdf} disabled={isDownloading}>
-              {isDownloading ? 'Preparing PDF...' : 'Download as PDF'}
+            <Button type='button' variant='outline' onClick={handleDownloadPdf}>
+              Download as PDF
             </Button>
           </div>
         </div>
       </form>
-      <div className='lg:sticky lg:top-6'>
+      <div className='resume-preview-container lg:sticky lg:top-6'>
         <ResumePreview ref={previewRef} />
       </div>
     </div>

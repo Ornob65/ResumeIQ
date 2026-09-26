@@ -7,6 +7,7 @@ import SignInPage from './auth/sign-in/index.jsx'
 import Home from './Home/index.jsx'
 import Dashboard from './dashboard/index.jsx'
 import ResumeEdit from './dashboard/resume-edit.jsx'
+import AtsScore from './dashboard/ats-score.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <Dashboard />,
+      },
+      {
+        path: 'dashboard/ats-score',
+        element: <AtsScore />,
       },
       {
         path: 'dashboard/resume/:resumeId/edit',

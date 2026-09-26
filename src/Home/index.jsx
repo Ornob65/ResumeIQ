@@ -109,7 +109,7 @@ function Home({ isPublic = false }) {
             <div>
               <h2 className='max-w-lg font-serif text-4xl leading-tight text-slate-900 md:text-5xl'>Get an AI resume-score to make sure your resume is perfect.</h2>
               <p className='mt-6 max-w-xl text-lg leading-8 text-slate-600'>Our AI-powered tools analyze your resume and provide actionable feedback to help you optimize it for better results.</p>
-              <Button asChild className='mt-8 bg-emerald-600 px-8 py-3 hover:bg-emerald-700'><a href={isPublic ? '/auth/sign-in' : '/dashboard'}>{isPublic ? 'Get Started' : 'Upload Resume'}</a></Button>
+              <Button asChild className='mt-8 bg-emerald-600 px-8 py-3 hover:bg-emerald-700'><a href={isPublic ? '/auth/sign-in' : '/dashboard/ats-score'}>{isPublic ? 'Get Started' : 'Upload Resume'}</a></Button>
             </div>
             <div className='overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm'>
               <img src={featuresImageTwo} alt='ResumeIQ templates preview' className='block aspect-[4/3] h-full w-full object-cover' />

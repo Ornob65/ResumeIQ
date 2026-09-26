@@ -177,21 +177,76 @@ body {
   word-break: break-word;
 }
 
+.image-resume-section-title {
+  display: block;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid;
+  line-height: 1.2;
+}
+
 @media print {
+  html,
+  body,
+  #root {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .site-header,
+  .resume-editor-form,
+  main > a {
+    display: none !important;
+  }
+
+  main {
+    width: 210mm !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .resume-preview-container {
+    display: block;
+    width: 210mm;
+    margin: 0;
+  }
+
+  .resume-editor-layout {
+    display: block;
+    margin-top: 0 !important;
+  }
+
   body {
     background: #ffffff;
   }
 
   .resume-preview-page {
-    width: 210mm;
-    min-height: 297mm;
-    max-width: none;
-    border: 0;
-    box-shadow: none;
-    page-break-after: always;
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-width: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .resume-preview-page * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .resume-preview-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .resume-preview-item {
+    page-break-inside: avoid;
     break-inside: avoid;
   }
 }

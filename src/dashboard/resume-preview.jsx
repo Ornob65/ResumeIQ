@@ -171,7 +171,7 @@ const ImageResumePreview = forwardRef(function ImageResumePreview({ resumeInfo }
         <div>
           <ImagePreviewSection title='Experience' color={accentColor}>
             {visibleExperience.map((item, index) => (
-              <div key={`${item.company}-${index}`} className='border-b border-slate-200 pb-3 pt-1 last:border-0'>
+              <div key={`${item.company}-${index}`} className='resume-preview-item border-b border-slate-200 pb-3 pt-1 last:border-0'>
                 <div className='flex justify-between gap-3'>
                   <div>
                     <h3 className='text-[12px] font-semibold' style={{ color: accentColor }}>{item.role || 'Role'}</h3>
@@ -186,7 +186,7 @@ const ImageResumePreview = forwardRef(function ImageResumePreview({ resumeInfo }
 
           <ImagePreviewSection title='Education' color={accentColor}>
             {visibleEducation.map((item, index) => (
-              <div key={`${item.school}-${index}`} className='border-b border-slate-200 pb-3 pt-1 last:border-0'>
+              <div key={`${item.school}-${index}`} className='resume-preview-item border-b border-slate-200 pb-3 pt-1 last:border-0'>
                 <h3 className='text-[12px] font-semibold' style={{ color: accentColor }}>{item.degree || 'Degree'}</h3>
                 <p className='font-bold text-slate-800'>{item.school || 'Institution'}</p>
                 <p>{item.dates}</p>
@@ -202,7 +202,7 @@ const ImageResumePreview = forwardRef(function ImageResumePreview({ resumeInfo }
 
           <ImagePreviewSection title='Projects' color={accentColor}>
             {visibleProjects.map((project, index) => (
-              <div key={`${project.name}-${index}`} className='border-b border-slate-200 pb-3 pt-1 last:border-0'>
+              <div key={`${project.name}-${index}`} className='resume-preview-item border-b border-slate-200 pb-3 pt-1 last:border-0'>
                 <h3 className='font-semibold' style={{ color: accentColor }}>{project.name || 'Project'}</h3>
                 {project.technologies && <p className='italic'>{project.technologies}</p>}
                 {project.dates && <p>{project.dates}</p>}
@@ -220,7 +220,7 @@ const ImageResumePreview = forwardRef(function ImageResumePreview({ resumeInfo }
           <ImagePreviewSection title='Communication' color={accentColor}><ImagePreviewText value={communication} /></ImagePreviewSection>
           <ImagePreviewSection title='References' color={accentColor}>
             {visibleReferences.map((reference, index) => (
-              <div key={`${reference.name}-${index}`} className='border-b border-slate-200 pb-2 pt-1 last:border-0'>
+              <div key={`${reference.name}-${index}`} className='resume-preview-item border-b border-slate-200 pb-2 pt-1 last:border-0'>
                 <p className='font-semibold' style={{ color: accentColor }}>{reference.name}</p>
                 <p>{[reference.role, reference.organization].filter(Boolean).join(' | ')}</p>
                 <p>{[reference.email, reference.phone].filter(Boolean).join(' | ')}</p>
@@ -235,8 +235,8 @@ const ImageResumePreview = forwardRef(function ImageResumePreview({ resumeInfo }
 
 function ImagePreviewSection({ title, children, color }) {
   return (
-    <section className='mb-5'>
-      <h2 className='mb-2 border-b-2 pb-1 text-[14px] font-bold uppercase' style={{ borderColor: color, color }}>{title}</h2>
+    <section className='resume-preview-section mb-5'>
+      <h2 className='image-resume-section-title text-[14px] font-bold uppercase' style={{ borderColor: color, color }}>{title}</h2>
       {children}
     </section>
   )

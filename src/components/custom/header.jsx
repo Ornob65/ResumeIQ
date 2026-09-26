@@ -15,7 +15,7 @@ function Header({ publicOnly = false }) {
   }
 
   return (
-    <header className='flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3 shadow-sm'>
+    <header className='site-header flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3 shadow-sm'>
       <div className='flex items-center gap-3'>
         <img src={logo} alt='ResumeIQ logo' width={40} height={40} />
         <span className='text-lg font-semibold text-slate-900'>ResumeIQ</span>
