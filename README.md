@@ -7,12 +7,14 @@ The app includes a public landing page, authenticated dashboard, resume customiz
 ## Features
 
 - Create and manage multiple resumes
+- Create, edit, and save AI-assisted cover letters
 - Edit resume sections and content in a guided dashboard
 - Switch between resume templates and visual styles
 - Customize theme colors and typography
 - Preview the resume before export
 - Clerk authentication for protected user flows
 - Supabase-backed resume data storage
+- Run `supabase-cover-letters.sql` in the Supabase SQL Editor before using the cover-letter workspace
 - Netlify deployment support with serverless functions
 
 ## Tech Stack

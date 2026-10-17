@@ -249,4 +249,41 @@ body {
     page-break-inside: avoid;
     break-inside: avoid;
   }
+
+  .cover-letter-editor-form,
+  .cover-letter-page .site-header,
+  .cover-letter-page aside,
+  .cover-letter-page main > div > a,
+  .cover-letter-preview-container > div:first-child,
+  .cover-letter-preview-container > h2 {
+    display: none !important;
+  }
+
+  .cover-letter-editor-layout {
+    display: block;
+    margin-top: 0 !important;
+  }
+
+  .cover-letter-preview-container {
+    display: block;
+    width: 210mm;
+    margin: 0;
+  }
+
+  .cover-letter-page main {
+    width: 210mm !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .cover-letter-preview-page {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

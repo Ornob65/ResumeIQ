@@ -8,6 +8,7 @@ import Home from './Home/index.jsx'
 import Dashboard from './dashboard/index.jsx'
 import ResumeEdit from './dashboard/resume-edit.jsx'
 import AtsScore from './dashboard/ats-score.jsx'
+import { CoverLetters, CoverLetterEdit } from './dashboard/cover-letter.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -35,6 +36,18 @@ const router = createBrowserRouter([
       {
         path: 'dashboard/ats-score',
         element: <AtsScore />,
+      },
+      {
+        path: 'dashboard/cover-letters',
+        element: <CoverLetters />,
+      },
+      {
+        path: 'dashboard/cover-letter/new',
+        element: <CoverLetterEdit />,
+      },
+      {
+        path: 'dashboard/cover-letter/:coverLetterId/edit',
+        element: <CoverLetterEdit />,
       },
       {
         path: 'dashboard/resume/:resumeId/edit',

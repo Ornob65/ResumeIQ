@@ -40,3 +40,41 @@ on public.resumes
 for delete
 to authenticated
 using (user_id = (auth.jwt() ->> 'sub'));
+
+create table if not exists public.cover_letters (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  content text not null default '',
+  cover_letter_data jsonb not null default '{}'::jsonb,
+  user_id text not null,
+  user_email text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.cover_letters enable row level security;
+
+create policy "Users can view their own cover letters"
+on public.cover_letters
+for select
+to authenticated
+using (user_id = (auth.jwt() ->> 'sub'));
+
+create policy "Users can create their own cover letters"
+on public.cover_letters
+for insert
+to authenticated
+with check (user_id = (auth.jwt() ->> 'sub'));
+
+create policy "Users can update their own cover letters"
+on public.cover_letters
+for update
+to authenticated
+using (user_id = (auth.jwt() ->> 'sub'))
+with check (user_id = (auth.jwt() ->> 'sub'));
+
+create policy "Users can delete their own cover letters"
+on public.cover_letters
+for delete
+to authenticated
+using (user_id = (auth.jwt() ->> 'sub'));

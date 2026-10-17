@@ -119,7 +119,7 @@ function Home({ isPublic = false }) {
             <div className='lg:order-2'>
               <h2 className='max-w-lg font-serif text-4xl leading-tight text-slate-900 md:text-5xl'>Create a cover letter in minutes using ResumeIQ.</h2>
               <p className='mt-6 max-w-xl text-lg leading-8 text-slate-600'>Our intuitive tools make it easy to craft a compelling cover letter that showcases your skills and experience.</p>
-              <Button asChild className='mt-8 bg-emerald-600 px-8 py-3 hover:bg-emerald-700'><a href={isPublic ? '/auth/sign-in' : '/dashboard'}>{isPublic ? 'Get Started' : 'Build My Cover Letter'}</a></Button>
+              <Button asChild className='mt-8 bg-emerald-600 px-8 py-3 hover:bg-emerald-700'><a href={isPublic ? '/auth/sign-in' : '/dashboard/cover-letter/new'}>{isPublic ? 'Get Started' : 'Build My Cover Letter'}</a></Button>
             </div>
             <div className='overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm lg:order-1'>
               <img src={coverLetterImage} alt='ResumeIQ cover letter preview' className='block aspect-[4/3] h-full w-full object-cover' />
