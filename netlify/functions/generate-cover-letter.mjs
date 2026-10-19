@@ -19,6 +19,8 @@ export default async function handler(request) {
     return new Response(JSON.stringify({ error: 'GEMINI_API_KEY is not configured.' }), { status: 500, headers })
   }
 
+  const geminiApiKey = process.env.GEMINI_API_KEY.trim()
+
   try {
     const data = await request.json()
     const candidateName = data.candidateName?.trim()
@@ -39,10 +41,13 @@ ${jobDescription}
 Return only valid JSON with this exact shape: {"content":"..."}. The letter must be polished, specific to the job description, free of markdown, and must not invent employers, credentials, dates, or achievements that were not provided. Use paragraph breaks with newline characters.`
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': geminiApiKey,
+        },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { responseMimeType: 'application/json' },

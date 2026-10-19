@@ -21,16 +21,21 @@ export default async function handler(request) {
     })
   }
 
+  const geminiApiKey = process.env.GEMINI_API_KEY.trim()
+
   try {
     const { jobTitle } = await request.json()
     const role = jobTitle?.trim() || 'the target role'
     const prompt = `Create three professional resume summaries for a candidate applying for ${role}. Return only valid JSON with this exact shape: {"suggestions":[{"level":"Fresher","text":"..."},{"level":"Mid-level","text":"..."},{"level":"Experienced","text":"..."}]}. Each summary should be 2-3 sentences, specific to ${role}, and contain no markdown.`
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': geminiApiKey,
+        },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { responseMimeType: 'application/json' },

@@ -20,6 +20,8 @@ export default async function handler(request) {
   if (request.method !== 'POST') return response({ error: 'Method not allowed.' }, 405)
   if (!process.env.GEMINI_API_KEY) return response({ error: 'GEMINI_API_KEY is not configured.' }, 500)
 
+  const geminiApiKey = process.env.GEMINI_API_KEY.trim()
+
   try {
     const { fileName, fileData, jobDescription } = await request.json()
     if (!fileName?.toLowerCase().endsWith('.pdf') || typeof fileData !== 'string') {
@@ -59,10 +61,13 @@ Target job description:
 ${jobDescription.trim()}`
 
     const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': geminiApiKey,
+        },
         body: JSON.stringify({
           contents: [{
             parts: [
